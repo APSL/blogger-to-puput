@@ -1,0 +1,31 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="17">
+            <item index="0" class="java.lang.String" itemvalue="gunicorn" />
+            <item index="1" class="java.lang.String" itemvalue="mccabe" />
+            <item index="2" class="java.lang.String" itemvalue="yawd-admin" />
+            <item index="3" class="java.lang.String" itemvalue="django-mailviews-master" />
+            <item index="4" class="java.lang.String" itemvalue="pyflakes" />
+            <item index="5" class="java.lang.String" itemvalue="httplib2" />
+            <item index="6" class="java.lang.String" itemvalue="ipython" />
+            <item index="7" class="java.lang.String" itemvalue="pep8" />
+            <item index="8" class="java.lang.String" itemvalue="django-mailer-2-master" />
+            <item index="9" class="java.lang.String" itemvalue="python-redmine-origin/redminecrm" />
+            <item index="10" class="java.lang.String" itemvalue="six" />
+            <item index="11" class="java.lang.String" itemvalue="requests" />
+            <item index="12" class="java.lang.String" itemvalue="sqlparse" />
+            <item index="13" class="java.lang.String" itemvalue="flake8" />
+            <item index="14" class="java.lang.String" itemvalue="greenlet" />
+            <item index="15" class="java.lang.String" itemvalue="psycopg2" />
+            <item index="16" class="java.lang.String" itemvalue="apconf-dev" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
