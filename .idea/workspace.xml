@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1d24b703-cc91-4e21-9bd6-5a9e5d8d2cff" name="Default" comment="" />
+    <list default="true" id="1d24b703-cc91-4e21-9bd6-5a9e5d8d2cff" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="blogger-to-puput.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -25,8 +27,8 @@
       <file leaf-file-name="blogger2puput.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/blogger2puput/management/commands/blogger2puput.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.34985423">
-              <caret line="20" column="27" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
+            <state vertical-scroll-proportion="1.2798834">
+              <caret line="204" column="33" selection-start-line="204" selection-start-column="33" selection-end-line="204" selection-end-column="33" />
               <folding>
                 <element signature="e#62#77#0" expanded="true" />
               </folding>
@@ -728,8 +730,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/blogger2puput/management/commands/blogger2puput.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34985423">
-          <caret line="20" column="27" selection-start-line="20" selection-start-column="27" selection-end-line="20" selection-end-column="27" />
+        <state vertical-scroll-proportion="1.2798834">
+          <caret line="204" column="33" selection-start-line="204" selection-start-column="33" selection-end-line="204" selection-end-column="33" />
           <folding>
             <element signature="e#62#77#0" expanded="true" />
           </folding>
