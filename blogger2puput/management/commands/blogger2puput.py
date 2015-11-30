@@ -2,21 +2,15 @@
 """Blogger to puput command module"""
 import requests
 import lxml.html
-from pip.backwardcompat import raw_input
 from optparse import make_option
-
-try:
-    from urllib.request import urlopen
-except ImportError:  # Python 2
-    from urllib2 import urlopen
+from six.moves import input
 
 from django.utils.text import Truncator
 from django.core.files import File
 from django.utils.html import strip_tags
 from django.db.utils import IntegrityError
-from django.utils.six.moves import input
 from django.contrib.auth.models import User
-from django.utils.encoding import smart_unicode
+from django.utils.encoding import smart_unicode, smart_str
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
 from django.core.management.base import CommandError
@@ -41,7 +35,7 @@ class Command(NoArgsCommand):
                     help='The tittle of blog the blogger'),
         make_option('--blogger_slug', dest='blogger_slug', default='',
                     help='The slug of blog the blogger'),
-        make_option('--blogger-blog-id', dest='blogger_blog_id', default='',
+        make_option('--blogger_blog_id', dest='blogger_blog_id', default='',
                     help='The id of the Blogger blog to import'),
         make_option('--blogger_api_key', dest='blogger_api_key', default='',
                     help='The API of the Blogger blog to import'),
@@ -58,7 +52,7 @@ class Command(NoArgsCommand):
         self.blogger_api_key = options.get('blogger_api_key')
         self.auto_excerpt = options.get('auto-excerpt', True)
 
-        self.stdout.write('Starting migration from Blogger to Puput %s:\n')
+        self.stdout.write("Starting migration from Blogger to Puput %s:\n")
 
         self.get_blog_page(options['blogger_slug'], options['blogger_title'])
 
@@ -110,7 +104,7 @@ class Command(NoArgsCommand):
         for post in self.get_posts():
             post_authors.add(post['author']['displayName'])
 
-        self.stdout.write('> %i authors found.\n' % len(post_authors))
+        self.stdout.write(u'> {0:d} authors found.\n'.format(len(post_authors)))
 
         self.authors = {}
         for post_author in post_authors:
@@ -121,12 +115,12 @@ class Command(NoArgsCommand):
         Handle actions for migrating the authors.
         """
 
-        action_text = "The author '%s' needs to be migrated to an user:\n" \
-                      "1. Use an existing user ?\n" \
-                      "2. Create a new user ?\n" \
-                      "Please select a choice: " % author_name
+        action_text = u"The author '{0:s}' needs to be migrated to an user:\n" \
+                      u"1. Use an existing user ?\n" \
+                      u"2. Create a new user ?\n" \
+                      u"Please select a choice: ".format(author_name)
         while True:
-            selection = str(input(action_text))
+            selection = input(smart_str(action_text))
             if selection and selection in '12':
                 break
         if selection == '1':
@@ -135,7 +129,7 @@ class Command(NoArgsCommand):
                 username = users[0].get_username()
                 preselected_user = username
                 usernames = [username]
-                usernames_display = ['[%s]' % username]
+                usernames_display = [u'[{0:s}]'.format(username)]
             else:
                 usernames = []
                 usernames_display = []
@@ -143,18 +137,18 @@ class Command(NoArgsCommand):
                 for user in users:
                     username = user.get_username()
                     if username == author_name:
-                        usernames_display.append('[%s]' % username)
+                        usernames_display.append(u'[{0:s}]'.format(username))
                         preselected_user = username
                     else:
                         usernames_display.append(username)
                     usernames.append(username)
             while True:
-                user_text = "1. Select your user, by typing " \
-                            "one of theses usernames:\n" \
-                            "%s or 'back'\n" \
-                            "Please select a choice: " % \
-                            ', '.join(usernames_display)
-                user_selected = raw_input(user_text)
+                user_text = u"1. Select your user, by typing " \
+                            u"one of theses usernames:\n" \
+                            u"{0:s} or 'back'\n" \
+                            u"Please select a choice: " \
+                    .format(u', '.join(usernames_display))
+                user_selected = input(smart_str(user_text))
                 if user_selected in usernames:
                     break
                 if user_selected == '' and preselected_user:
@@ -164,9 +158,9 @@ class Command(NoArgsCommand):
                     return self.migrate_author(author_name)
             return users.get(**{users[0].USERNAME_FIELD: user_selected})
         else:
-            create_text = "2. Please type the email of " \
-                          "the '%s' user or 'back': " % author_name
-            author_mail = raw_input(create_text)
+            create_text = u"2. Please type the email of " \
+                          u"the '{0:s}' user or 'back': ".format(author_name)
+            author_mail = input(smart_str(create_text))
             if author_mail.strip() == 'back':
                 return self.migrate_author(author_name)
             try:
@@ -175,7 +169,7 @@ class Command(NoArgsCommand):
                 return User.objects.get(**{User.USERNAME_FIELD: author_name})
 
     def get_posts(self):
-        res = requests.get('https://www.googleapis.com/blogger/v3/blogs/{}/posts?key={}'.format(self.blogger_blog_id,
+        res = requests.get('https://www.googleapis.com/blogger/v3/blogs/{}/posts/?maxResults=500&key={}'.format(self.blogger_blog_id,
                                                                                                 self.blogger_api_key))
         if res.status_code == 200:
             return res.json()['items']
@@ -197,8 +191,8 @@ class Command(NoArgsCommand):
 
             try:
                 entry = EntryPage.objects.get(slug=slug)
-                self.stdout.write('> Skipped %s (already migrated)\n'
-                                  % entry)
+                self.stdout.write(u'> Skipped {0:s} (already migrated)\n'
+                                  .format(entry))
             except EntryPage.DoesNotExist:
                 entry = EntryPage(
                     title=post['title'],
@@ -220,7 +214,7 @@ class Command(NoArgsCommand):
 
     def _import_image(self, image_url):
         img = NamedTemporaryFile(delete=True)
-        img.write(urlopen(image_url).read())
+        img.write(requests.get(image_url).content)
         img.flush()
         return img
 
