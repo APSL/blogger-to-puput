@@ -2,6 +2,7 @@
 """Blogger to puput command module"""
 import requests
 import lxml.html
+import lxml.etree as ET
 from optparse import make_option
 from six.moves import input
 
@@ -191,8 +192,6 @@ class Command(NoArgsCommand):
 
             try:
                 entry = EntryPage.objects.get(slug=slug)
-                self.stdout.write(u'> Skipped {0:s} (already migrated)\n'
-                                  .format(entry))
             except EntryPage.DoesNotExist:
                 entry = EntryPage(
                     title=post['title'],
@@ -218,19 +217,26 @@ class Command(NoArgsCommand):
         img.flush()
         return img
 
+    def _image_to_embed(self, image):
+        return '<embed alt="{}" embedtype="image" format="fullwidth" id="{}"/>'.format(image.title, image.id)
+
     def process_content_image(self, content):
         self.stdout.write('\tGenerate and replace entry content images....')
         if content:
             root = lxml.html.fromstring(content)
-            for el in root.iter('img'):
-                parent_node = next(el.iterancestors())
-                if 'bp.blogspot.com' in el.attrib['src']:
-                    img = self._import_image(el.attrib['src'])
-                    title = el.attrib['src'].rsplit('/', 1)[1]
-                    new_image = WagtailImage(file=File(file=img, name=title), title=title)
+            for img_node in root.iter('img'):
+                parent_node = img_node.getparent()
+                if 'bp.blogspot.com' in img_node.attrib['src']:
+                    self.stdout.write('\t\t{}'.format(img_node.attrib['src']))
+                    image = self._import_image(img_node.attrib['src'])
+                    title = img_node.attrib['src'].rsplit('/', 1)[1]
+                    new_image = WagtailImage(file=File(file=image, name=title), title=title)
                     new_image.save()
-                    el.attrib['src'] = new_image.get_rendition('original').file.url
-                    parent_node.attrib['href'] = new_image.get_rendition('original').file.url
-                    self.stdout.write('\t\t{}'.format(el.attrib['src']))
-            content = lxml.html.tostring(root, pretty_print=True)
+                    if parent_node.tag == 'a':
+                        parent_node.addnext(ET.XML(self._image_to_embed(new_image)))
+                        parent_node.drop_tree()
+                    else:
+                        parent_node.append(ET.XML(self._image_to_embed(new_image)))
+                        img_node.drop_tag()
+            content = ET.tostring(root)
         return content
