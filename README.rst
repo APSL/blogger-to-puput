@@ -1,7 +1,7 @@
 zinnia-to-puput
 ===============
 
-Import your Blogger blog data into Puput.
+Import your Blogger blog data intgit o Puput.
 
 Usage
 -----
