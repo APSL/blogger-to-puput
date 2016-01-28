@@ -1,7 +1,7 @@
-zinnia-to-puput
-===============
+blogger-to-puput
+================
 
-Import your Blogger blog data intgit o Puput.
+Import your Blogger blog data into Puput.
 
 Usage
 -----
@@ -9,10 +9,10 @@ Usage
 2. Add :code:`blogger2puput` to your :code:`INSTALLED_APPS` in :code:`settings.py` file.
 3. Run the management command::
 
-    python manage.py blogger2puput
+    python manage.py blogger2puput --blogger_blog_id=Your BlogID --blogger_api_key=Your APIKey
 
 You can optionally pass the slug and the title of the blog to the importer::
 
-    python manage.py blogger2puput --blogger_title="Blog" --blogger_blog_id=Your BlogID --blogger_api_key=Your APIKey
+    python manage.py blogger2puput --slug=blog --title="Puput blog" --blogger_blog_id=Your BlogID --blogger_api_key=Your APIKey
 
 
